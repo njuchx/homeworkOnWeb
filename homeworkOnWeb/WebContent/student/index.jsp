@@ -1,4 +1,5 @@
 
+<%@page import="com.chen.users.Homework"%>
 <%@page import="org.apache.catalina.User"%>
 <%@page import="com.chen.users.Student"%>
 <%@page import="com.chen.jdbc.JdbcUtils"%>
@@ -9,7 +10,10 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-
+<jsp:useBean id="studentDao" class="com.chen.dao.StudentDao"/>
+<%
+Student student = (Student)request.getSession().getAttribute("user");
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html class="no-focus">
 <head>
@@ -79,47 +83,12 @@
                         <!-- Side Header 侧边栏颜色 -->
                         <div class="side-header side-content bg-white-op">
                             <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+                  
                             <button class="btn btn-link text-gray pull-right hidden-md hidden-lg" type="button" data-toggle="layout" data-action="sidebar_close">
                                 <i class="fa fa-times"></i>
                             </button>
-                            <!-- Themes functionality initialized in App() -> uiHandleTheme() -->
-                            <div class="btn-group pull-right">
-                                <button class="btn btn-link text-gray dropdown-toggle" data-toggle="dropdown" type="button">
-                                    <i class="si si-drop"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right font-s13 sidebar-mini-hide">
-                                    <li>
-                                        <a data-toggle="theme" data-theme="default" tabindex="-1" href="javascript:void(0)">
-                                            <i class="fa fa-circle text-default pull-right"></i> <span class="font-w600">Default</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="theme" data-theme="assets/css/themes/amethyst.min.css" tabindex="-1" href="javascript:void(0)">
-                                            <i class="fa fa-circle text-amethyst pull-right"></i> <span class="font-w600">Amethyst</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="theme" data-theme="assets/css/themes/city.min.css" tabindex="-1" href="javascript:void(0)">
-                                            <i class="fa fa-circle text-city pull-right"></i> <span class="font-w600">City</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="theme" data-theme="assets/css/themes/flat.min.css" tabindex="-1" href="javascript:void(0)">
-                                            <i class="fa fa-circle text-flat pull-right"></i> <span class="font-w600">Flat</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="theme" data-theme="assets/css/themes/modern.min.css" tabindex="-1" href="javascript:void(0)">
-                                            <i class="fa fa-circle text-modern pull-right"></i> <span class="font-w600">Modern</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="theme" data-theme="assets/css/themes/smooth.min.css" tabindex="-1" href="javascript:void(0)">
-                                            <i class="fa fa-circle text-smooth pull-right"></i> <span class="font-w600">Smooth</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            
+                            
                             <a class="h5 text-white" href="https://www.nju.edu.cn/">
                                 <span class="h4 font-w600 sidebar-mini-hide">南京大学</span>
                             </a>
@@ -130,31 +99,26 @@
                         <div class="side-content left-menu-wrap">
                             <ul class="nav-main">
                                 <li>
-                                    <a class="active" href="index.jsp"><i class="si si-speedometer"></i><span class="sidebar-mini-hide">首页</span></a>
+                                    <a class="active" href="index.jsp"><i class="glyphicon glyphicon-home"></i><span class="sidebar-mini-hide">首页</span></a>
                                 </li>
-                                <li class="nav-main-heading"><span class="sidebar-mini-hide">课程信息</span></li>
+                                <li class="nav-main-heading"><span class="sidebar-mini-hide">作业信息</span></li>
                                 <li>
-                                    <a class="nav-submenu" data-toggle="nav-submenu" href="seabook.jsp"><i class="si si-badge"></i><span class="sidebar-mini-hide">查看课程</span></a>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="seehomework.jsp"><i class="glyphicon glyphicon-search"></i><span class="sidebar-mini-hide">查看作业</span></a>
                                     
                                 </li>
-                                
-                                
-                                
-                                <li class="nav-main-heading"><span class="sidebar-mini-hide">学生管理</span></li>
                                 <li>
-                                    <a class="nav-submenu" data-toggle="nav-submenu" href="ModifyPassword.jsp"><i class="si si-wrench"></i><span class="sidebar-mini-hide">修改密码</span></a>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="dohomework.jsp"><i class="glyphicon glyphicon-pencil"></i><span class="sidebar-mini-hide">完成作业</span></a>
                                     
                                 </li>
                                 
                                 
                                 
-                                
-                                
-                                
-                                <!-- <li>
-                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-user"></i><span class="sidebar-mini-hide">修改管理员信息</span></a>
+                                <li class="nav-main-heading"><span class="sidebar-mini-hide">信息管理</span></li>
+                                <li>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="alterstudent.jsp"><i class="glyphicon glyphicon-cog"></i><span class="sidebar-mini-hide">修改密码</span></a>
                                     
-                                </li> -->
+                                </li>
+                               
                             </ul>
                         </div>
                         <!-- END Side Content -->
@@ -166,7 +130,7 @@
                             <!-- Themes functionality initialized in App() -> 登录人员名称 -->
                             <div class="btn-group pull-right">
                                 
-                                    <i class="si si-drop"><a href="${pageContext.request.contextPath}/RemoveSeesion">退出</a></i>
+                                    <i class="glyphicon glyphicon-user"><a href="${pageContext.request.contextPath}/RemoveSeesion">退出</a></i>
                                 
                                 
                             </div>
@@ -193,13 +157,13 @@
                     <li class="hidden-md hidden-lg pull-left">
                         <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
                         <button class="btn btn-default" data-toggle="layout" data-action="sidebar_toggle" type="button">
-                            <i class="fa fa-navicon"></i>
+                            <i class="glyphicon glyphicon-th-list"></i>
                         </button>
                     </li>
                     <li class="hidden-xs hidden-sm pull-left">
                         <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
                         <button class="btn btn-default" data-toggle="layout" data-action="sidebar_mini_toggle" type="button">
-                            <i class="fa fa-ellipsis-v"></i>
+                            <i class="glyphicon glyphicon-th-list"></i>
                         </button>
                     </li>
                     
@@ -207,7 +171,7 @@
                         <form class="form-horizontal" action="#" method="post">
                             <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
                                 <input class="form-control" type="text" id="base-material-text" name="base-material-text" placeholder="Search..">
-                                <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
                             </div>
                         </form>
                     </li>
@@ -237,7 +201,7 @@
                             <!-- Dynamic Table Full -->
                     <div class="block">
                         <div class="block-header">
-                            <h3 class="block-title">今日课程预览表 <small>All</small></h3>
+                            <h3 class="block-title">我的作业 </h3>
                         </div>
                         <div class="block-content">
                             <!-- DataTables init on table by adding .js-dataTable-full class, functionality initialized in js/pages/base_tables_datatables.js -->
@@ -246,78 +210,38 @@
                                     <tr>
                                         <th class="text-center"></th>
                                         <th>课程</th>
-                                        <th class="hidden-xs">所在学院</th>
-                                        <th class="hidden-xs">授课地点</th>
-                                        <th class="hidden-xs">类别</th>
+                                        <th class="hidden-xs">作业</th>
+                                        <th class="hidden-xs">截止时间</th>
+                                        <th class="hidden-xs">截止状态</th>
                                         
                                     </tr>
 
                                 </thead>
                                 
                                 <tbody>
-                                 
+                                 <%
+                                 List<Homework> homeworks =studentDao.seeHomework(student.getStuID());
+                                 //List<Homework> homeworks =studentDao.seeAllHomework();
+                                 int i = 1;
+                                 for(Homework homework:homeworks)
+                                 {
+                                	 
+                                 %>
 								  <tr>
                                    
-                                        <td class="text-center">1</td>
-                                        <td class="font-w600">${user.getClassID()}</td>
-                                        <td class="font-w600">物理学院</td>
-                                        <td class="hidden-xs">6#406</td>
-                                        <td class="hidden-xs">
-                                           private
-                                        </td>
+                                        <td class="text-center"><%=i %></td>
+                                        <td class="font-w600"><%=homework.getClassID() %></td>
+                                        <td class="font-w600"><%=homework.getHomeworkTitle() %></td>
+                                        <td class="hidden-xs"><%=homework.getDeadline() %></td>
+                                        <td class="hidden-xs"><%=homework.getHomeworkState() %></td>
                                         
                                         
                                     </tr> 
-								 
-                                    
-                                   <%-- <tr>
-                                        <td class="text-center">2</td>
-                                        <td class="font-w600">sdut</td>
-                                        <td class="font-w600">武器云</td>
-                                        <td class="hidden-xs">970643573@qq.com</td>
-                                        <td class="hidden-xs">
-                                            <span class="label label-success">管理员</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Edit Client"><i class="fa fa-pencil"></i></button>
-                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Remove Client"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">3</td>
-                                        <td class="font-w600">admin</td>
-                                        <td class="font-w600">李晓春</td>
-                                        <td class="hidden-xs">1174822726@qq.com</td>
-                                        <td class="hidden-xs">
-                                            <span class="label label-warning">学生</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Edit Client"><i class="fa fa-pencil"></i></button>
-                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Remove Client"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">4</td>
-                                        <td class="font-w600">admin</td>
-                                        <td class="font-w600">李晓春</td>
-                                        <td class="hidden-xs">1174822726@qq.com</td>
-                                        <td class="hidden-xs">
-                                            <span class="label label-info">教师</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Edit Client"><i class="fa fa-pencil"></i></button>
-                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Remove Client"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>--%>
-                                   
-                                    
-                                </tbody>
+                                    <%
+                                    i++;
+                                 }
+                                 %>
+                               </tbody>
                             </table>
                         </div>
                     </div>
@@ -350,17 +274,17 @@
                                                         <tr>
                                                             <td class="font-w600">学号：</td>
                                                             
-                                                            <td class="font-w600 text-success text-right" style="width: 70px;">${user.getStuID()}</td>
+                                                            <td class="font-w600 text-success text-right" style="width: 70px;"><%=student.getStuID() %></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="font-w600">姓名：</td>
                                                             
-                                                            <td class="font-w600 text-success text-right">${user.getName()}</td>
+                                                            <td class="font-w600 text-success text-right"><%=student.getName() %></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="font-w600">班级：</td>
                                                             
-                                                            <td class="font-w600 text-success text-right">${user.getClassID()}
+                                                            <td class="font-w600 text-success text-right"><%=student.getClassID() %>
                                                             
 															</td>
                                                         </tr>
@@ -391,103 +315,21 @@
             <!-- Footer -->
             <footer id="page-footer" class="content-mini content-mini-full font-s12 bg-gray-lighter clearfix">
                 <div class="pull-right">
-                    Crafted with <i class="fa fa-heart text-city"></i> by <a class="font-w600" href="#" target="_blank">pixelcave</a>
+                    Crafted by <a class="font-w600" href="#" target="_blank">Chen.Liu.Bao</a>
                 </div>
                 <div class="pull-left">
-                    <a class="font-w600" href="javascript:void(0)" target="_blank">南京大学</a> &copy; <span class="js-year-copy"></span>
+                    <a class="font-w600" href="https://www.nju.edu.cn" target="_blank">南京大学</a> &copy; <span >2017</span>
                 </div>
             </footer>
             <!-- END Footer -->
         </div>
         <!-- END Page Container -->
 
-        <!-- Apps Modal -->
-        <!-- Opens from the button in the header -->
-        <div class="modal fade" id="apps-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-sm modal-dialog modal-dialog-top">
-                <div class="modal-content">
-                    <!-- Apps Block -->
-                    <div class="block block-themed block-transparent">
-                        <div class="block-header bg-primary-dark">
-                            <ul class="block-options">
-                                <li>
-                                    <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
-                                </li>
-                            </ul>
-                            <h3 class="block-title">Apps</h3>
-                        </div>
-                        <div class="block-content">
-                            <div class="row text-center">
-                                <div class="col-xs-6">
-                                    <a class="block block-rounded" href="index.html">
-                                        <div class="block-content text-white bg-default">
-                                            <i class="si si-speedometer fa-2x"></i>
-                                            <div class="font-w600 push-15-t push-15">Backend</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-xs-6">
-                                    <a class="block block-rounded" href="frontend_home.html">
-                                        <div class="block-content text-white bg-modern">
-                                            <i class="si si-rocket fa-2x"></i>
-                                            <div class="font-w600 push-15-t push-15">Frontend</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END Apps Block -->
-                </div>
-            </div>
-        </div>
-        <!-- END Apps Modal -->
+
         
-        
-        
-        <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">修改</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="name" placeholder="姓名">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="position" placeholder="位置">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="salary" placeholder="薪资">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="start_date" placeholder="时间"
-                           data-date-format="yyyy/mm/dd">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="office" placeholder="工作地点">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="extn" placeholder="编号">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" id="initData">添加模拟数据</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="save">保存</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<%-- <div class="btn-group">
-  <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Edit Client"><i class="fa fa-pencil"></i></button>
-  <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="Remove Client"><i class="fa fa-times"></i></button>
-  </div> --%>
+ 
+
+<!-- 
 <script type="text/javascript">
 	var table;
     
@@ -552,7 +394,7 @@
         window.navigate("index.jsp"); 
          
     }
-        
+  -->       
 </script>
 
         <!-- OneUI Core JS: jQuery, Bootstrap, slimScroll, scrollLock, Appear, CountTo, Placeholder, Cookie and App.js -->

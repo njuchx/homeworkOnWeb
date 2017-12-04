@@ -8,18 +8,21 @@ var BaseTableDatatables = function() {
     // Init full DataTable, for more examples you can check out https://www.datatables.net/
     var initDataTableFull = function() {
         jQuery('.js-dataTable-full').dataTable({
-            columnDefs: [ { orderable: false, targets: [ 4 ] } ],
+            columnDefs: [ { orderable: false, targets: [ 3 ] } ],
             pageLength: 10,
-            lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]]
+            lengthMenu: [[5, 10, 15, 16], [5, 10, 15, 16]],
+
         });
+        
+
     };
 
     // Init simple DataTable, for more examples you can check out https://www.datatables.net/
     var initDataTableSimple = function() {
         jQuery('.js-dataTable-simple').dataTable({
-            columnDefs: [ { orderable: false, targets: [ 4 ] } ],
+            columnDefs: [ { orderable: false, targets: [ 2 ] } ],
             pageLength: 10,
-            lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
+            lengthMenu: [[5, 10, 15, 19], [5, 10, 15, 19]],
             searching: false,
             oLanguage: {
                 sLengthMenu: ""

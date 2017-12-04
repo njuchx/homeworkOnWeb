@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.chen.dao.AssTeacherDao;
+import com.chen.dao.StudentDao;
+import com.chen.dao.TeacherDao;
 import com.chen.users.AssTeacher;
 import com.chen.users.Student;
 import com.chen.users.Teacher;
@@ -33,6 +36,7 @@ public class ModifyPassword extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		doPost(request, response);
 	}
 
 	/**
@@ -47,18 +51,18 @@ public class ModifyPassword extends HttpServlet {
 		String identity = (String) session.getAttribute("identity");
 
 		if (identity.equals("student")) {
-			Student student = (Student) session.getAttribute("user");
-			student.modifyPassword(newPassword);
+			StudentDao studentDao = new StudentDao();
+			studentDao.modifyPassword(((Student) session.getAttribute("user")).getStuID(),newPassword);
 			response.sendRedirect(request.getContextPath()
 					+ "/student/index.jsp");
 		} else if (identity.equals("teacher")) {
-			Teacher teacher = (Teacher) session.getAttribute("user");
-			teacher.modifyPassword(newPassword);
+			TeacherDao teacherDao = new TeacherDao();
+			teacherDao.modifyPassword(((Teacher) session.getAttribute("user")).getTeacherID(),newPassword);
 			response.sendRedirect(request.getContextPath()
 					+ "/teacher/index.jsp");
 		} else if (identity.equals("assteacher")) {
-			AssTeacher assTeacher = (AssTeacher) session.getAttribute("user");
-			assTeacher.modifyPassword(newPassword);
+			AssTeacherDao assTeacherDao = new AssTeacherDao();
+			assTeacherDao.modifyPassword(((AssTeacher) session.getAttribute("user")).getAssTeacherID(),newPassword);
 			response.sendRedirect(request.getContextPath()
 					+ "/teacher/index.jsp");
 		} else {

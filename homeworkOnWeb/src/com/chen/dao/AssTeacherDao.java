@@ -46,9 +46,22 @@ public class AssTeacherDao {
 		} else {
 			return false;
 
+		}	
+	}
+	public void modifyPassword(String assTeacherID,String newPassword) {
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			String sql = "update assteacher set password=? where assteacherID=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, newPassword);
+			ps.setString(2, assTeacherID);
+			ps.executeUpdate();
+			ps.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		
-		
 	}
 }
