@@ -42,6 +42,14 @@
     <servlet-name>ModifyPassword</servlet-name>
     <url-pattern>/servlet/ModifyPassword</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>SubmitHomework</servlet-name>
+    <servlet-class>com.chen.servlet.SubmitHomework</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SubmitHomework</servlet-name>
+    <url-pattern>/servlet/SubmitHomework</url-pattern>
+  </servlet-mapping>
   <session-config>
     <session-timeout>0</session-timeout>
   </session-config>

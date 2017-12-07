@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.chen.jdbc.JdbcUtils;
+import com.chen.users.Homework;
+import com.chen.users.Question;
 import com.chen.users.Student;
+import com.chen.users.Class;
 import com.chen.users.Teacher;
 import com.chen.users.Users;
 
@@ -37,7 +40,6 @@ public class TeacherDao {
 			}
 			jdbc.releace(conn, ps, rs);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return teacher;
@@ -92,7 +94,7 @@ public class TeacherDao {
 		
 	}
 	
-	public List<Student> showClassStudents(){
+	public List<Student> showClassStudents(String classID){
 		List<Student> students = new ArrayList<Student>();
 		try {
 			JdbcUtils jdbc = new JdbcUtils();
@@ -100,13 +102,14 @@ public class TeacherDao {
 			if(conn==null){
 				System.out.println("数据库不存在");
 			}
-			String sql = "select * from student";
+			String sql = "select * from class_student where classID=?";
 			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, classID);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				Student student = new Student();
 				student.setStuID(rs.getString("stuID"));
-				student.setName(rs.getString("name"));
+				student.setName(rs.getString("stuName"));
 				students.add(student);
 			}
 			jdbc.releace(conn, ps, rs);
@@ -116,6 +119,32 @@ public class TeacherDao {
 		return students;
 		
 	}
+	public List<Class> showClasses(String teacherID){
+		List<Class> classes = new ArrayList<Class>();
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			if(conn==null){
+				System.out.println("数据库不存在");
+			}
+			String sql = "select * from class_teacher where teacherID=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, teacherID);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Class classD = new Class();
+				classD.setClassID(rs.getString("classID"));
+				classD.setTeacherName(rs.getString("teacherName"));
+				classD.setCourse(rs.getString("course"));
+				classes.add(classD);
+			}
+			jdbc.releace(conn, ps, rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return classes;		
+	}
+	
 	public void addStudent(String stuID,String stuName) {
 		try {
 			JdbcUtils jdbc = new JdbcUtils();
@@ -136,7 +165,7 @@ public class TeacherDao {
 		try {
 			JdbcUtils jdbc = new JdbcUtils();
 			Connection conn = jdbc.getConection();
-			String sql = "replace into class_student(classID,stuID,stuName) values(?,?,?)";/////待修改///////////////
+			String sql = "insert into class_student(classID,stuID,stuName) values(?,?,?)";/////待修改///////////////
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, classID);
 			ps.setString(2, stuID);
@@ -153,7 +182,7 @@ public class TeacherDao {
 		try {
 			JdbcUtils jdbc = new JdbcUtils();
 			Connection conn = jdbc.getConection();
-			String sql = "replace into class_teacher(teacherID,teacherName,classID,course) values(?,?,?,?)";/////待修改///////////////
+			String sql = "insert into class_teacher(teacherID,teacherName,classID,course) values(?,?,?,?)";/////待修改///////////////
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1,teacherID);
 			ps.setString(2, teacherName);
@@ -282,6 +311,146 @@ public class TeacherDao {
 		}
 	}
 	
+	public void addQuestion(Question question){
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			String sql = "replace into questions(tskID,course,chapter,author,tskDetail) values(?,?,?,?,?)";/////待修改///////////////
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, question.getTskID());
+			ps.setString(2, question.getCourse());
+			ps.setString(3, question.getChapter());
+			ps.setString(4, question.getAuthor());
+			ps.setString(5, question.getTskDetail());
+			ps.executeUpdate();
+			ps.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public List<Question> showQuestions(String course) {
+		List<Question> questions = new ArrayList<Question>();
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			if(conn==null){
+				System.out.println("数据库不存在");
+			}
+			String sql = "select * from questions where course=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, course);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Question question = new Question();
+				question.setTskID(rs.getString("tskID"));
+				question.setAuthor(rs.getString("author"));
+				question.setCourse(rs.getString("course"));
+				question.setChapter(rs.getString("chapter"));
+				question.setTskDetail(rs.getString("tskDetail"));
+				questions.add(question);
+			}
+			jdbc.releace(conn, ps, rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return questions;
+		
+	}
+	
+	public void addHomework(Homework homework){
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			String sql = "replace into homework(homeworkID,classID,homeworkTitle,deadline,homeworkState) values(?,?,?,?,?)";/////待修改///////////////
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, homework.getHomeworkID());
+			ps.setString(2, homework.getClassID());
+			ps.setString(3, homework.getHomeworkTitle());
+			ps.setDate(4, homework.getDeadline());
+			ps.setString(5, homework.getHomeworkState());
+			ps.executeUpdate();
+			ps.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public List<Homework> showHomeworks(String course) {
+		List<Homework> homeworks = new ArrayList<Homework>();
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			if(conn==null){
+				System.out.println("数据库不存在");
+			}
+			String sql = "select * from questions where course=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, course);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Homework homework = new Homework();
+				homework.setClassID(rs.getString("classID"));
+				homework.setHomeworkID(rs.getString("homeworkID"));
+				homework.setHomeworkTitle(rs.getString("homeworkTitle"));
+				homework.setDeadline(rs.getDate("deadline"));
+				homework.setHomeworkState(rs.getString("homeworkState"));
+				homeworks.add(homework);
+			}
+			jdbc.releace(conn, ps, rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return homeworks;
+		
+	}
+	
+	public void addQuestionToHomework(String homeworkID,String tskID,String tskContent,String tskDetail) {
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			String sql = "replace into tsk_detail(homeworkID,tskID,tskContent,tskDetail) values(?,?,?,?)";/////待修改///////////////
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, homeworkID);
+			ps.setString(2, tskID);
+			ps.setString(3, tskContent);
+			ps.setString(4, tskDetail);
+			ps.executeUpdate();
+			ps.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<Question> showStuAnswer(String homeworkID,String stuID) {
+		List<Question> questions = new ArrayList<Question>();
+		try {
+			JdbcUtils jdbc = new JdbcUtils();
+			Connection conn = jdbc.getConection();
+			if(conn==null){
+				System.out.println("数据库不存在");
+			}
+			String sql = "select * from task_answerstu where homeworkID=? and stuID=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, homeworkID);
+			ps.setString(1, stuID);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Question question = new Question();
+				question.setTskID(rs.getString("tskID"));
+				question.setTskDetail(rs.getString("tskDetail"));
+				question.setTskStuAnswer(rs.getString("tskStuAnswer"));
+				questions.add(question);
+			}
+			jdbc.releace(conn, ps, rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return questions;
+		
+	}
+	
 	public void addGrade(String classID,String stuID,String homeworkTitle,String grade,String subState) {
 		try {
 			JdbcUtils jdbc = new JdbcUtils();
@@ -292,7 +461,7 @@ public class TeacherDao {
 			ps.setString(2, stuID);
 			ps.setString(3, homeworkTitle);
 			ps.setString(4, grade);
-			ps.setString(4, subState);
+			ps.setString(5, subState);
 			ps.executeUpdate();
 			ps.close();
 			conn.close();

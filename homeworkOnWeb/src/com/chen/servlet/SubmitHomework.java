@@ -40,15 +40,17 @@ public class SubmitHomework extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
 		String stuID = (String) (((Student) session.getAttribute("user")).getStuID());
 		String tskStuAnswer = request.getParameter("tskStuAnswer");
 		String homeworkID = request.getParameter("homeworkID");
 		String tskID = request.getParameter("tskID");
 		String tskState = request.getParameter("tskState");
+		System.out.println(stuID+tskStuAnswer+homeworkID+tskID+tskState);
 		StudentDao studentDao = new StudentDao();
 		studentDao.submitHomework(stuID,homeworkID,tskID,tskStuAnswer,tskState);
-		response.sendRedirect(request.getContextPath() + "/teacher/dohomework.jsp");
+		response.sendRedirect(request.getContextPath() + "/student/dohomework.jsp");
 	}
 
 }

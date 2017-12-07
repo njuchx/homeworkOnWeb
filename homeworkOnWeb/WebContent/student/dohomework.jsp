@@ -211,6 +211,10 @@ Student student = (Student)request.getSession().getAttribute("user");
                             for(Homework homework:homeworks)
                             {
                             	homework.setQuestions(studentDao.showHomeworkTsk(homework.getHomeworkID()));
+                            	if(homework.getHomeworkState().equals("已截止")){
+                            		i++;
+                            		continue;
+                            	}
                             	String exerciseID = "exercise"+i;
                             	int j = 1;
                             	%>
@@ -258,7 +262,30 @@ Student student = (Student)request.getSession().getAttribute("user");
 								-->                 			                                                 			
                    			</ul>
                    		</div>
-                   		
+<script type="text/javascript">  
+
+function post(ID,URL, PARAMS) {        
+    var temp = document.createElement("form");        
+    temp.action = URL;        
+    temp.method = "post";        
+    temp.style.display = "none";        
+    for (var x in PARAMS) {        
+        var opt = document.createElement("textarea");        
+        opt.name = x;        
+        opt.value = PARAMS[x];        
+        // alert(opt.name)        
+        temp.appendChild(opt);        
+    }
+    var opt = document.createElement("textarea");
+    opt.name = "tskStuAnswer";        
+    opt.value = document.getElementById(ID).value;        
+    // alert(opt.name)        
+    temp.appendChild(opt);
+    document.body.appendChild(temp);        
+    temp.submit();        
+    return temp;        
+}     
+ </script>  
                         <!-- 题目和答题区域 -->
                         <div id="myTabContent" class="tab-content">
                         
@@ -275,6 +302,9 @@ Student student = (Student)request.getSession().getAttribute("user");
 										<%
 											for (Question question : homework.getQuestions()) {
 													String workID_exID = "work" + i + "_ex" + j;
+													String answerareaID = "answerareawork" + i + "_ex" + j;
+													question=studentDao.getTskStu(question, student.getStuID(),homework.getHomeworkID());
+													j++;
 													%>
 												
 							<div class="tab-pane fade" id="<%=workID_exID %>">
@@ -282,19 +312,34 @@ Student student = (Student)request.getSession().getAttribute("user");
 								 	<form role="form" class="tab-pane fade in active" >
  									<div class="form-group" class="tab-pane fade in active" >
 
- 										<textarea class="form-control" id="answerarea"  placeholder="在此输入答案"  rows="20">
- 								
+ 										<textarea class="form-control" id="<%=answerareaID%>"  placeholder="在此输入答案"  rows="20">
+ 								        <%=question.getTskStuAnswer() %>
  										</textarea>
- 									<button type="button" class="btn btn-defalut">保存</button>
- 									<button type="button" class="btn btn-defalut">提交</button>
+ 										<%
+ 										if(question.getTskState().equals("已提交"))
+ 										{
+ 											i++;
+ 											%>
+ 												</div>                                                                                                                                                          
+                       			</form>	
+							</div>
+										
+ 											<%
+ 											continue;
+ 										}
+ 										%>
+ 									<button type="button" class="btn btn-defalut" onclick="post('<%=answerareaID%>','/homeworkOnWeb/servlet/SubmitHomework',
+ 									{tskState:'已保存',homeworkID:<%=homework.getHomeworkID()%>,tskID:<%=question.getTskID()%>});">保存</button>
+ 									<button type="button" class="btn btn-defalut" onclick="post('<%=answerareaID%>','/homeworkOnWeb/servlet/SubmitHomework',
+ 									{tskState:'已提交',homeworkID:<%=homework.getHomeworkID()%>,tskID:<%=question.getTskID()%>});">提交</button>
  							
  									</div>                                                                                                                                                          
                        			</form>	
 							</div>
 												
 													<% 
-													j++;
-												}
+													
+												} 
                             	i++;
                             }
                    			%>

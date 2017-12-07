@@ -9,7 +9,9 @@ import com.chen.users.Question;
 import com.chen.users.Users;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -135,19 +137,26 @@ public class StudentDao {
 		
 		List<Homework> homeworks = new ArrayList<Homework>();
 		JdbcUtils jdbc = new JdbcUtils();
+		Set<String> homeworkSet = new HashSet<String>();
 		try {
 			Connection conn = jdbc.getConection();
 			if(conn==null){
 				System.out.println("数据库不存在");
 			}
-			String sql = "select * from task_AnswerStu where stuID=? ";
+			String sql = "select * from task_answerStu where stuID=? ";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, stuID);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
+				if(homeworkSet.contains(rs.getString("homeworkID"))){
+					continue;
+				}
+				homeworkSet.add(rs.getString("homeworkID"));
+				
 				Homework homework = new Homework();
 				homework = setHomework(rs.getString("homeworkID"));
 				homework.setTskState(rs.getString("tskState"));
+				
 				homeworks.add(homework);
 			}
 			jdbc.releace(conn, ps, rs);
@@ -186,17 +195,18 @@ public class StudentDao {
 		return questions;
 	}
 	
-	public Question getTskStu(Question question,String stuID) {
+	public Question getTskStu(Question question,String stuID,String homeworkID) {
 		JdbcUtils jdbc = new JdbcUtils();
 		try {
 			Connection conn = jdbc.getConection();
 			if(conn==null){
 				System.out.println("数据库不存在");
 			}
-			String sql = "select * from task_AnswerStu where stuID=? and tskID=?";
+			String sql = "select * from task_answerStu where stuID=? and tskID=? and homeworkID=?";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, stuID);
 			ps.setString(2, question.getTskID());
+			ps.setString(3, homeworkID);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				question.setTskState(rs.getString("tskState"));
